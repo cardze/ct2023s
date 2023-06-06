@@ -180,19 +180,20 @@ def rgba_image_to_svg_pixels(im, opaque=None):
             rgba = im.getpixel(here)
             if opaque and not rgba[3]:
                 continue
-            s.write("""  <rect x="%d" y="%d" width="1" height="1" style="fill:rgb%s; fill-opacity:%.3f; stroke:none;" />\n""" % (x, y, rgba[0:3], float(rgba[2]) / 255))
+            # s.write("""  <rect x="%d" y="%d" width="1" height="1" style="fill:rgb%s; fill-opacity:%.3f; stroke:none;" />\n""" % (x, y, rgba[0:3], float(rgba[2]) / 255))
+            s.write("""  <rect x="%d" y="%d" width="1" height="1" style="fill:rgb%s; fill-opacity:%.3f; stroke:none;" />\n""" % (x, y, rgba[0:3], float(255) / 255))
     s.write("""</svg>\n""")
     return s.getvalue()
 
 def main(input_rel_path:str, output_rel_path:str):
     image = Image.open(input_rel_path).convert('RGBA')
-    svg_image = rgba_image_to_svg_contiguous(image)
-    #svg_image = rgba_image_to_svg_pixels(image)
+    # svg_image = rgba_image_to_svg_contiguous(image)
+    svg_image = rgba_image_to_svg_pixels(image)
     with open(output_rel_path, "w") as text_file:
         text_file.write(svg_image)
 
 if __name__ == '__main__':
-    target_path = './input/1_138_after' # !!! 目標資料夾 !!!
+    target_path = './output/Aligned' # !!! 目標資料夾 !!!
     result_path = './output/svg_image' # 存放資料夾
     if not os.path.exists(result_path):
         os.makedirs(result_path)
@@ -200,8 +201,8 @@ if __name__ == '__main__':
     print("Handling svg transformation...")
     
     allFileList = os.listdir(target_path)
-    # for index in tqdm(range(len(allFileList))):
-    for index in tqdm(range(10)):
+    for index in tqdm(range(len(allFileList))):
+    # for index in tqdm(range(10)):
         filePath = target_path + "/" + allFileList[index]
         outputPath = result_path + "/" + allFileList[index].split(".")[0] + ".svg"
         main(filePath, outputPath)
